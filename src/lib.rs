@@ -8,6 +8,7 @@ mod expr;
 mod group;
 mod parser;
 mod parse_text_entity;
+mod parse_segment;
 mod convert_tree;
 mod path;
 mod tree;
