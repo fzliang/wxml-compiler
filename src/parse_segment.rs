@@ -83,8 +83,8 @@ fn parse_tag(target: &mut TmplElement, pair: Pair<'_, Rule>, pairs: &mut Pairs<'
                 target.append_element(elem);
             }
             Rule::tag_begin => {
-                let mut elem = {
-                    let mut pairs = pair.into_iter();
+                let mut elem = {             
+                    let mut pairs = pair.into_inner();
                     let tag_name = pairs.next().unwrap().as_str();
                     let virtual_type = if tag_name == "block" {
                         TmplVirtualType::Pure
