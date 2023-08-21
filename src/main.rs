@@ -90,7 +90,7 @@ mod tests {
         let mut group = TmplGroup::new();
         load_wxml_files(&mut group, &test_dir, &mut vec![]);
 
-        println!("{:#?}", group);
+        // println!("{:#?}", group);
 
         fs::remove_dir_all(test_dir).unwrap();
     }
