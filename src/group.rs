@@ -40,6 +40,16 @@ impl TmplGroup {
         Ok(())
     }
 
+    /// Add a script segment into the group.
+    ///
+    /// The `content` must be valid JavaScript file content.
+    /// `require` and `exports` can be visited in this JavaScript segment, similar to Node.js.
+    pub fn add_script(&mut self, path: &str, content: &str) -> Result<(), TmplParseError> {
+        self.scripts.insert(path.to_string(), content.to_string());
+        self.has_scripts = true;
+        Ok(())
+    }
+
     pub fn len(&self) -> usize {
         self.trees.len()
     }

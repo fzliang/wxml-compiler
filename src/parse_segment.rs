@@ -14,7 +14,11 @@ use pest::iterators::{Pair, Pairs};
 pub(crate) fn parse_segment(target: &mut TmplElement, pairs: &mut Pairs<'_, Rule>) {
     while let Some(pair) = pairs.peek() {
         match pair.as_rule() {
-            Rule::tag => parse_tag(target, pair, pairs),
+            Rule::tag => {
+                if parse_tag(target, pair, pairs) == false {
+                    return;
+                }
+            }
             Rule::text_node => {
                 parse_text_node(target, pair);
                 pairs.next();
@@ -24,7 +28,7 @@ pub(crate) fn parse_segment(target: &mut TmplElement, pairs: &mut Pairs<'_, Rule
     }
 }
 
-fn parse_tag(target: &mut TmplElement, pair: Pair<'_, Rule>, pairs: &mut Pairs<'_, Rule>) {
+fn parse_tag(target: &mut TmplElement, pair: Pair<'_, Rule>, pairs: &mut Pairs<'_, Rule>) -> bool {
     let mut tag_pairs = pair.into_inner();
     if let Some(pair) = tag_pairs.next() {
         let read_attr = |mut pairs: Pairs<Rule>| {
@@ -83,7 +87,7 @@ fn parse_tag(target: &mut TmplElement, pair: Pair<'_, Rule>, pairs: &mut Pairs<'
                 target.append_element(elem);
             }
             Rule::tag_begin => {
-                let mut elem = {             
+                let mut elem = {
                     let mut pairs = pair.into_inner();
                     let tag_name = pairs.next().unwrap().as_str();
                     let virtual_type = if tag_name == "block" {
@@ -120,13 +124,14 @@ fn parse_tag(target: &mut TmplElement, pair: Pair<'_, Rule>, pairs: &mut Pairs<'
                 if tag_name_matched {
                     pairs.next();
                 }
-                return;
+                return false;
             }
             _ => unreachable!(),
         }
     } else {
         pairs.next();
     }
+    return true;
 }
 
 fn parse_text_node(target: &mut TmplElement, pair: Pair<'_, Rule>) {

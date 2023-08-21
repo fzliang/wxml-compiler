@@ -1,0 +1,25 @@
+{
+  "name": "wxml-compiler",
+  "version": "0.0.1",
+  "description": "Copy from [glass-easel-stylesheet-compiler](https://github.com/wechat-miniprogram/glass-easel)",
+  "files": [
+    "pkg-nodejs/wxml-compiler*",
+    "/README.md"
+  ],
+  "main": "pkg-nodejs/wxml-compiler.js",
+  "types": "pkg-nodejs/wxml-compiler.d.ts",
+  "scripts": {
+    "build": "wasm-pack build --release --target nodejs --out-dir pkg-nodejs",
+    "build:web": "wasm-pack build --release --target web --out-dir pkg-web"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fzliang/wxml-parser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/fzliang/wxml-parser/issues"
+  },
+  "homepage": "https://github.com/fzliang/wxml-parser#readme"
+}

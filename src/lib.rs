@@ -13,6 +13,8 @@ mod convert_tree;
 mod path;
 mod tree;
 mod utils;
+mod js_bindings;
 
 pub use group::*;
 pub use parser::*;
+pub use js_bindings::*;
