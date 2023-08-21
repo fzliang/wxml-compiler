@@ -22,7 +22,7 @@ pub(crate) fn convert_directives(tree: &mut TmplTree) {
         scripts,
     } = tree;
 
-    convert_nodes_directives(root, imports, includes, sub_templates, scripts)
+    convert_nodes_directives(root, imports, includes, sub_templates, scripts);
 }
 
 fn convert_nodes_directives(

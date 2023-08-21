@@ -69,28 +69,28 @@ mod tests {
     #[test]
     fn it_loads_wxml_files() {
         let test_dir =
-            std::env::temp_dir().join("glass_easel_template_compiler_tests_load_wxml_files");
+            std::env::temp_dir().join("wxml_compiler_tests_load_wxml_files");
 
         if test_dir.exists() {
             fs::remove_dir_all(&test_dir).unwrap();
         }
         fs::create_dir(&test_dir).unwrap();
-        fs::write(
-            test_dir.join("index.wxml"),
-            "<view><text>test wxml-compiler</text></view>",
-        )
-        .unwrap();
+        // fs::write(
+        //     test_dir.join("index.wxml"),
+        //     "<view><text>test wxml-compiler</text></view>",
+        // )
+        // .unwrap();
 
         fs::write(
             test_dir.join("index2.wxml"),
-            r#"<view><template is="odd" data="{{data.a}}">{{data.b}}</template></view>"#,
+            r#"<template is="odd" data="{{a.b}}" />"#,
         )
         .unwrap();
 
         let mut group = TmplGroup::new();
         load_wxml_files(&mut group, &test_dir, &mut vec![]);
 
-        println!("{:?}", group);
+        println!("{:#?}", group);
 
         fs::remove_dir_all(test_dir).unwrap();
     }

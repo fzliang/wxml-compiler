@@ -55,6 +55,28 @@ impl fmt::Display for TmplTree {
     }
 }
 
+impl fmt::Display for TmplNode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            TmplNode::TextNode(n) => write!(f, "{}", n),
+            TmplNode::Element(n) => write!(f, "{}", n),
+        }
+    }
+}
+
+impl fmt::Display for TmplTextNode {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            TmplTextNode::Static(v) => {
+                write!(f, "{}", escape_html_text(v))
+            }
+            TmplTextNode::Dynamic { expr, .. } => {
+                write!(f, "{{{{{}}}}}", expr)
+            }
+        }
+    }
+}
+
 impl fmt::Display for TmplElement {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let virtual_string: String = match &self.virtual_type {
@@ -153,12 +175,9 @@ impl fmt::Display for TmplElement {
     }
 }
 
-impl fmt::Display for TmplNode {
+impl fmt::Display for TmplExpr {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            TmplNode::TextNode(n) => write!(f, "{}", n),
-            TmplNode::Element(n) => write!(f, "{}", n),
-        }
+        write!(f, "{}", self.to_expr_string(TmplExprLevel::Comma, false))
     }
 }
 
@@ -463,12 +482,6 @@ impl fmt::Display for TmplAttr {
     }
 }
 
-impl fmt::Display for TmplExpr {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", self.to_expr_string(TmplExprLevel::Comma, false))
-    }
-}
-
 impl fmt::Display for TmplAttrValue {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
@@ -477,19 +490,6 @@ impl fmt::Display for TmplAttrValue {
             }
             TmplAttrValue::Dynamic { expr, .. } => {
                 write!(f, "\"{{{{{}}}}}\"", expr)
-            }
-        }
-    }
-}
-
-impl fmt::Display for TmplTextNode {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
-            TmplTextNode::Static(v) => {
-                write!(f, "{}", escape_html_text(v))
-            }
-            TmplTextNode::Dynamic { expr, .. } => {
-                write!(f, "{{{{{}}}}}", expr)
             }
         }
     }
