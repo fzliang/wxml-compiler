@@ -1,13 +1,14 @@
 use std::collections::HashMap;
 
 use crate::{
+    binding_map::BindingMapCollector,
     element::{
         TmplAttr, TmplAttrKind, TmplAttrValue, TmplElement, TmplNode, TmplScript, TmplTextNode,
         TmplVirtualType,
     },
     expr::TmplExpr,
     tree::TmplTree,
-    IfType, binding_map::BindingMapCollector,
+    IfType,
 };
 
 pub(crate) fn convert_directives(tree: &mut TmplTree) {
@@ -426,14 +427,15 @@ fn convert_nodes_directives(
     }
 }
 
-
 pub(crate) fn prepare_expr_in_tree(tree: &mut TmplTree) {
-    let scope_names = tree.scripts.iter().map(|script| {
-        match script {
+    let scope_names = tree
+        .scripts
+        .iter()
+        .map(|script| match script {
             TmplScript::Inline { module_name, .. } => module_name.to_string(),
             TmplScript::GlobalRef { module_name, .. } => module_name.to_string(),
-        }
-    }).collect();
+        })
+        .collect();
     prepare_node_expr_in_tree(
         &mut tree.root,
         &mut tree.binding_map_collector,
@@ -476,8 +478,7 @@ fn prepare_node_expr_in_tree(
                     expr,
                     binding_map_keys,
                 } => {
-                    *binding_map_keys =
-                        expr.get_binding_map_keys(bmc, scope_names, should_disable);
+                    *binding_map_keys = expr.get_binding_map_keys(bmc, scope_names, should_disable);
                 }
             },
             TmplNode::Element(ref mut elem) => {
@@ -529,9 +530,7 @@ fn prepare_node_expr_in_tree(
                 if elem.slot_values.len() > 0 {
                     let s_len = scope_names.len();
                     let mut s = scope_names.clone();
-                    for (index, (_, provide_name)) in
-                        elem.slot_values.iter_mut().enumerate()
-                    {
+                    for (index, (_, provide_name)) in elem.slot_values.iter_mut().enumerate() {
                         let new_provide_name = format!("${}", s_len + index);
                         s.push(std::mem::replace(provide_name, new_provide_name));
                     }
@@ -539,20 +538,10 @@ fn prepare_node_expr_in_tree(
                 }
                 let scope_names_ref = new_scope_names.as_ref().unwrap_or(scope_names);
                 for attr in elem.attrs.iter_mut() {
-                    prepare_attr_value(
-                        &mut attr.value,
-                        bmc,
-                        scope_names_ref,
-                        should_disable,
-                    );
+                    prepare_attr_value(&mut attr.value, bmc, scope_names_ref, should_disable);
                 }
                 if let Some(slot) = elem.slot.as_mut() {
-                    prepare_attr_value(
-                        slot,
-                        bmc,
-                        scope_names_ref,
-                        should_disable,
-                    );
+                    prepare_attr_value(slot, bmc, scope_names_ref, should_disable);
                 }
                 prepare_node_expr_in_tree(elem, bmc, scope_names_ref, should_disable);
             }

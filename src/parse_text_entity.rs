@@ -250,7 +250,7 @@ fn parse_arr(pair: Pair<'_, Rule>) -> Box<TmplExpr> {
 // member = { value ~ (static_member | dynamic_member | func_call)* }
 // static_member = { "." ~ ident }
 // dynamic_member = { "[" ~ cond ~ "]" }
-// func_call = { "(" ~ (cond ~ ("," ~ cond)*)? ~ ")" 
+// func_call = { "(" ~ (cond ~ ("," ~ cond)*)? ~ ")"
 fn parse_member(pair: Pair<'_, Rule>) -> Box<TmplExpr> {
     let mut pairs = pair.into_inner();
     let mut ret = parse_value(pairs.next().unwrap());

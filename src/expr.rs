@@ -48,8 +48,67 @@ pub(crate) enum TmplExpr {
     Cond(Box<TmplExpr>, Box<TmplExpr>, Box<TmplExpr>),
 }
 
+#[derive(Debug, PartialEq, PartialOrd)]
+pub(crate) enum TmplExprLevel {
+    Lit = 0,
+    Member = 1,
+    Unary = 2,
+    Multiply = 3,
+    Plus = 4,
+    Comparison = 5,
+    Eq = 6,
+    BitAnd = 7,
+    BitXor = 8,
+    BitOr = 9,
+    LogicAnd = 10,
+    LogicOr = 11,
+    Cond = 12,
+    Comma = 13,
+}
 
 impl TmplExpr {
+    pub(crate) fn level(&self) -> TmplExprLevel {
+        match self {
+            TmplExpr::ScopeIndex(_) => TmplExprLevel::Member,
+            TmplExpr::Ident(_) => TmplExprLevel::Lit,
+            TmplExpr::ToStringWithoutUndefined(_) => TmplExprLevel::Member,
+            TmplExpr::LitUndefined => TmplExprLevel::Lit,
+            TmplExpr::LitNull => TmplExprLevel::Lit,
+            TmplExpr::LitStr(_) => TmplExprLevel::Lit,
+            TmplExpr::LitInt(_) => TmplExprLevel::Lit,
+            TmplExpr::LitFloat(_) => TmplExprLevel::Lit,
+            TmplExpr::LitBool(_) => TmplExprLevel::Lit,
+            TmplExpr::LitObj(_) => TmplExprLevel::Lit,
+            TmplExpr::LitArr(_) => TmplExprLevel::Lit,
+            TmplExpr::StaticMember(_, _) => TmplExprLevel::Member,
+            TmplExpr::DynamicMember(_, _) => TmplExprLevel::Member,
+            TmplExpr::FuncCall(_, _) => TmplExprLevel::Member,
+            TmplExpr::Reverse(_) => TmplExprLevel::Unary,
+            TmplExpr::BitReverse(_) => TmplExprLevel::Unary,
+            TmplExpr::Positive(_) => TmplExprLevel::Unary,
+            TmplExpr::Negative(_) => TmplExprLevel::Unary,
+            TmplExpr::Multiply(_, _) => TmplExprLevel::Multiply,
+            TmplExpr::Divide(_, _) => TmplExprLevel::Multiply,
+            TmplExpr::Mod(_, _) => TmplExprLevel::Multiply,
+            TmplExpr::Plus(_, _) => TmplExprLevel::Plus,
+            TmplExpr::Minus(_, _) => TmplExprLevel::Plus,
+            TmplExpr::Lt(_, _) => TmplExprLevel::Comparison,
+            TmplExpr::Gt(_, _) => TmplExprLevel::Comparison,
+            TmplExpr::Lte(_, _) => TmplExprLevel::Comparison,
+            TmplExpr::Gte(_, _) => TmplExprLevel::Comparison,
+            TmplExpr::Eq(_, _) => TmplExprLevel::Eq,
+            TmplExpr::Ne(_, _) => TmplExprLevel::Eq,
+            TmplExpr::EqFull(_, _) => TmplExprLevel::Eq,
+            TmplExpr::NeFull(_, _) => TmplExprLevel::Eq,
+            TmplExpr::BitAnd(_, _) => TmplExprLevel::BitAnd,
+            TmplExpr::BitXor(_, _) => TmplExprLevel::BitXor,
+            TmplExpr::BitOr(_, _) => TmplExprLevel::BitOr,
+            TmplExpr::LogicAnd(_, _) => TmplExprLevel::LogicAnd,
+            TmplExpr::LogicOr(_, _) => TmplExprLevel::LogicOr,
+            TmplExpr::Cond(_, _, _) => TmplExprLevel::Cond,
+        }
+    }
+
     // this function finds which keys can be put into the binding map,
     // and convert scope names to scope indexes at the same time.
     pub(crate) fn get_binding_map_keys(

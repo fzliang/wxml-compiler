@@ -1,22 +1,12 @@
-use std::{collections::HashMap, fmt::Debug};
+use std::collections::HashMap;
 
 use crate::{parse_tmpl, tree::TmplTree, TmplParseError};
 
 pub struct TmplGroup {
-    trees: HashMap<String, TmplTree>,
-    scripts: HashMap<String, String>,
-    has_scripts: bool,
-    extra_runtime_string: String,
-}
-
-impl Debug for TmplGroup {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        for (name, tree) in self.trees.iter() {
-            writeln!(f, "{}", name)?;
-            writeln!(f, "{:?}", tree)?;
-        }
-        Ok(())
-    }
+    pub(crate) trees: HashMap<String, TmplTree>,
+    pub(crate) scripts: HashMap<String, String>,
+    pub(crate) has_scripts: bool,
+    pub(crate) extra_runtime_string: String,
 }
 
 impl TmplGroup {

@@ -77,19 +77,20 @@ mod tests {
         fs::create_dir(&test_dir).unwrap();
         fs::write(
             test_dir.join("index.wxml"),
-            "<view><text>test wxml-compiler</text>></view>",
+            "<view><text>test wxml-compiler</text></view>",
         )
         .unwrap();
-        // fs::create_dir(test_dir.join("components")).unwrap();
-        // fs::write(test_dir.join("components").join("common.wxml"), "").unwrap();
-        // fs::create_dir(test_dir.join("templates")).unwrap();
-        // fs::write(test_dir.join("templates").join("header.wxml"), "").unwrap();
+
+        fs::write(
+            test_dir.join("index2.wxml"),
+            r#"<view><template is="odd" data="{{data.a}}">{{data.b}}</template></view>"#,
+        )
+        .unwrap();
 
         let mut group = TmplGroup::new();
         load_wxml_files(&mut group, &test_dir, &mut vec![]);
 
-        // assert_eq!(group.len(), 3);
-        // assert!(group.contains_template("index"));
+        println!("{:?}", group);
 
         fs::remove_dir_all(test_dir).unwrap();
     }
